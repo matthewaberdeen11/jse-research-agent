@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BASIS Research — Jamaica Equity Research, on demand</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #14181f;
+      --ink-soft: #43505f;
+      --muted: #8a97a6;
+      --line: #e7eaef;
+      --paper: #ffffff;
+      --paper-2: #f6f8fb;
+      --accent: #2f6df0;
+      --accent-deep: #1b3a6b;
+      --hero-top: #88a4c4;
+      --hero-mid: #6f90b6;
+      --hero-bot: #5b7aa3;
+      --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; font-family: var(--sans); color: var(--ink); background: var(--paper); -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ---------------- Nav ---------------- */
+    .nav {
+      position: absolute; top: 0; left: 0; right: 0; z-index: 30;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 22px 40px; color: #fff;
+    }
+    .logo { display: flex; align-items: center; gap: 9px; font-size: 21px; font-weight: 600; letter-spacing: -0.01em; }
+    .logo svg { width: 22px; height: 22px; }
+    .logo .thin { font-weight: 400; opacity: 0.92; }
+
+    .nav-links { display: flex; align-items: center; gap: 6px; }
+    .nav-item { position: relative; }
+    .nav-item > a, .nav-item > button {
+      font: inherit; color: #fff; background: none; border: none; cursor: pointer;
+      display: flex; align-items: center; gap: 6px;
+      padding: 9px 14px; font-size: 15.5px; font-weight: 500; border-radius: 9px;
+      transition: background 0.15s;
+    }
+    .nav-item > a:hover, .nav-item > button:hover { background: rgba(255,255,255,0.12); }
+    .nav-item .caret { width: 13px; height: 13px; transition: transform 0.2s; }
+    .nav-item.open .caret { transform: rotate(180deg); }
+
+    .dropdown {
+      position: absolute; top: calc(100% + 8px); left: 0; min-width: 220px;
+      background: rgba(255,255,255,0.16); backdrop-filter: blur(18px);
+      border: 1px solid rgba(255,255,255,0.28); border-radius: 16px;
+      padding: 8px; opacity: 0; visibility: hidden; transform: translateY(-6px);
+      transition: opacity 0.18s, transform 0.18s, visibility 0.18s;
+    }
+    .nav-item:hover .dropdown, .nav-item.open .dropdown { opacity: 1; visibility: visible; transform: translateY(0); }
+    .dropdown a { display: block; padding: 11px 14px; border-radius: 10px; font-size: 15px; color: #fff; font-weight: 500; }
+    .dropdown a:hover { background: rgba(255,255,255,0.16); }
+
+    .nav-right { display: flex; align-items: center; gap: 10px; }
+    .signin { color: #fff; font-size: 15.5px; font-weight: 500; padding: 10px 14px; border-radius: 10px; }
+    .signin:hover { background: rgba(255,255,255,0.12); }
+    .btn-pill {
+      background: #fff; color: var(--ink); font-size: 15px; font-weight: 600;
+      padding: 11px 22px; border-radius: 999px; border: 1px solid transparent;
+      transition: transform 0.12s, box-shadow 0.2s; display: inline-block;
+    }
+    .btn-pill:hover { box-shadow: 0 8px 24px rgba(20,30,50,0.18); transform: translateY(-1px); }
+
+    .hamburger { display: none; background: none; border: none; color: #fff; cursor: pointer; padding: 8px; }
+    .hamburger svg { width: 26px; height: 26px; }
+
+    /* ---------------- Hero ---------------- */
+    .hero {
+      position: relative; min-height: 100vh; overflow: hidden;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      background: linear-gradient(180deg, var(--hero-top) 0%, var(--hero-mid) 52%, var(--hero-bot) 100%);
+    }
+    .hero-bg { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .hero-glow {
+      position: absolute; top: 6%; left: 50%; transform: translateX(-50%);
+      width: 520px; height: 520px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0) 62%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative; z-index: 10;
+      display: grid; grid-template-columns: 1fr 1fr; align-items: end; gap: 30px;
+      max-width: 1320px; width: 100%; margin: 0 auto; padding: 0 40px 64px;
+    }
+    .hero-title { color: #fff; font-size: clamp(46px, 7vw, 104px); line-height: 0.98; font-weight: 600; letter-spacing: -0.035em; margin: 0; }
+    .hero-title .dim { color: rgba(255,255,255,0.5); }
+    .hero-side { padding-bottom: 12px; }
+    .hero-side p { color: rgba(255,255,255,0.92); font-size: 17px; line-height: 1.55; max-width: 380px; margin: 0 0 24px; margin-left: auto; }
+    .hero-ctas { display: flex; gap: 12px; justify-content: flex-end; }
+    .btn-solid { background: #fff; color: var(--ink); font-size: 15.5px; font-weight: 600; padding: 14px 26px; border-radius: 999px; transition: transform 0.12s, box-shadow 0.2s; }
+    .btn-solid:hover { box-shadow: 0 10px 30px rgba(20,30,50,0.22); transform: translateY(-1px); }
+    .btn-ghost {
+      background: rgba(255,255,255,0.12); color: #fff; font-size: 15.5px; font-weight: 500;
+      padding: 14px 26px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.4);
+      transition: background 0.15s; cursor: pointer;
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,0.22); }
+
+    /* carousel arrows */
+    .arrow {
+      position: absolute; top: 50%; transform: translateY(-50%); z-index: 15;
+      width: 52px; height: 52px; border-radius: 50%; border: none; cursor: pointer;
+      background: rgba(18,26,40,0.78); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s, transform 0.15s;
+    }
+    .arrow:hover { background: rgba(18,26,40,0.95); }
+    .arrow svg { width: 20px; height: 20px; }
+    .arrow.prev { left: 28px; }
+    .arrow.next { right: 28px; }
+
+    .dots { position: absolute; bottom: 26px; left: 50%; transform: translateX(-50%); z-index: 15; display: flex; gap: 9px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.45); border: none; cursor: pointer; padding: 0; transition: background 0.2s, width 0.2s; }
+    .dot.active { background: #fff; width: 22px; border-radius: 5px; }
+
+    .fade { animation: fade 0.5s ease; }
+    @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ---------------- Sections ---------------- */
+    section { padding: 96px 40px; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .eyebrow { font-size: 13px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin: 0 0 14px; }
+    .sec-title { font-size: clamp(30px, 4vw, 46px); font-weight: 600; letter-spacing: -0.025em; line-height: 1.08; margin: 0; }
+    .sec-lede { font-size: 18px; color: var(--ink-soft); max-width: 620px; margin: 18px 0 0; line-height: 1.6; }
+
+    /* stats strip */
+    .stats { background: var(--paper-2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 40px; }
+    .stats-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(4,1fr); gap: 24px; text-align: center; }
+    .stat .num { font-size: 40px; font-weight: 700; letter-spacing: -0.03em; }
+    .stat .lab { font-size: 14px; color: var(--muted); margin-top: 4px; }
+
+    /* features */
+    .feat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; margin-top: 52px; }
+    .card { border: 1px solid var(--line); border-radius: 20px; padding: 30px 26px; background: var(--paper); transition: box-shadow 0.2s, transform 0.2s; }
+    .card:hover { box-shadow: 0 14px 40px rgba(20,30,50,0.07); transform: translateY(-3px); }
+    .card .ico { width: 46px; height: 46px; border-radius: 12px; background: #eef3fe; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+    .card .ico svg { width: 22px; height: 22px; stroke: var(--accent); }
+    .card h3 { font-size: 19px; font-weight: 600; margin: 0 0 8px; letter-spacing: -0.01em; }
+    .card p { font-size: 15px; color: var(--ink-soft); margin: 0; line-height: 1.6; }
+
+    /* steps */
+    .steps { background: var(--accent-deep); color: #fff; }
+    .steps .eyebrow { color: #9cc0ff; }
+    .steps .sec-title, .steps .sec-lede { color: #fff; }
+    .steps .sec-lede { color: rgba(255,255,255,0.8); }
+    .step-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 36px; margin-top: 56px; }
+    .step .n { font-size: 14px; font-weight: 600; color: #9cc0ff; font-variant-numeric: tabular-nums; margin-bottom: 14px; }
+    .step h3 { font-size: 20px; font-weight: 600; margin: 0 0 8px; }
+    .step p { font-size: 15px; color: rgba(255,255,255,0.78); margin: 0; line-height: 1.6; }
+    .step .bar { height: 2px; background: rgba(255,255,255,0.18); margin-bottom: 20px; }
+
+    /* cta band */
+    .cta { text-align: center; }
+    .cta .container { max-width: 720px; }
+    .cta h2 { font-size: clamp(32px, 4.5vw, 52px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.05; margin: 0; }
+    .cta p { font-size: 18px; color: var(--ink-soft); margin: 18px auto 32px; max-width: 520px; }
+    .btn-blue { background: var(--accent); color: #fff; font-size: 16px; font-weight: 600; padding: 15px 30px; border-radius: 999px; display: inline-block; transition: transform 0.12s, box-shadow 0.2s; }
+    .btn-blue:hover { box-shadow: 0 12px 32px rgba(47,109,240,0.35); transform: translateY(-1px); }
+
+    /* footer */
+    footer { border-top: 1px solid var(--line); padding: 56px 40px 40px; background: var(--paper-2); }
+    .foot-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 32px; }
+    .foot-brand .logo { color: var(--ink); margin-bottom: 12px; }
+    .foot-brand p { font-size: 14px; color: var(--muted); max-width: 280px; line-height: 1.6; margin: 0; }
+    .foot-col h4 { font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0 0 16px; }
+    .foot-col a { display: block; font-size: 15px; color: var(--ink-soft); padding: 6px 0; }
+    .foot-col a:hover { color: var(--accent); }
+    .foot-bottom { max-width: 1100px; margin: 40px auto 0; padding-top: 24px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: 13px; color: var(--muted); }
+
+    /* mobile menu */
+    .mobile-menu { display: none; }
+
+    /* ---------------- Responsive ---------------- */
+    @media (max-width: 900px) {
+      .nav-links, .nav-right .signin { display: none; }
+      .hamburger { display: block; }
+      .hero-content { grid-template-columns: 1fr; gap: 24px; padding-bottom: 80px; }
+      .hero-side p { margin-left: 0; text-align: left; }
+      .hero-ctas { justify-content: flex-start; }
+      .arrow.prev { left: 14px; } .arrow.next { right: 14px; }
+      .stats-grid { grid-template-columns: repeat(2,1fr); gap: 32px; }
+      .feat-grid, .step-grid { grid-template-columns: 1fr; }
+      .foot-grid { grid-template-columns: 1fr 1fr; }
+      section { padding: 72px 24px; }
+      .nav { padding: 18px 24px; }
+      .mobile-menu.open {
+        display: flex; flex-direction: column; gap: 4px;
+        position: fixed; inset: 0; z-index: 40; padding: 80px 28px 28px;
+        background: var(--accent-deep);
+      }
+      .mobile-menu a { color: #fff; font-size: 20px; font-weight: 500; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.12); }
+      .mobile-menu .m-close { position: absolute; top: 22px; right: 24px; background: none; border: none; color: #fff; cursor: pointer; }
+      .mobile-menu .m-close svg { width: 28px; height: 28px; }
+      .mobile-menu .m-cta { margin-top: 22px; background: #fff; color: var(--ink); text-align: center; border-radius: 999px; border: none; }
+    }
+    @media (max-width: 560px) {
+      .foot-grid { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a class="logo" href="/">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2v20M2 12h20M5 5l14 14M19 5 5 19" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <span>Basis</span>
+    </a>
+
+    <div class="nav-links">
+      <div class="nav-item">
+        <button>Coverage <svg class="caret" viewBox="0 0 24 24" fill="none"><path d="m6 9 6 6 6-6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <div class="dropdown">
+          <a href="/app">Equity briefs</a>
+          <a href="/app">Sector screens</a>
+          <a href="/app">Watchlists</a>
+        </div>
+      </div>
+      <div class="nav-item">
+        <button>Resources <svg class="caret" viewBox="0 0 24 24" fill="none"><path d="m6 9 6 6 6-6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <div class="dropdown">
+          <a href="#features">Blog</a>
+          <a href="#features">Case studies</a>
+          <a href="#how">Methodology</a>
+        </div>
+      </div>
+      <div class="nav-item">
+        <button>Company <svg class="caret" viewBox="0 0 24 24" fill="none"><path d="m6 9 6 6 6-6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <div class="dropdown">
+          <a href="#footer">About us</a>
+          <a href="#footer">Careers</a>
+          <a href="#footer">Contact</a>
+        </div>
+      </div>
+      <div class="nav-item"><a href="#pricing">Pricing</a></div>
+    </div>
+
+    <div class="nav-right">
+      <a class="signin" href="/app">Sign in</a>
+      <a class="btn-pill" href="/app">Get started</a>
+      <button class="hamburger" id="hamburger" aria-label="Open menu">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M3 6h18M3 12h18M3 18h18" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <button class="m-close" id="mClose" aria-label="Close menu"><svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6 6 18" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></button>
+    <a href="/app">Coverage</a>
+    <a href="#features">Resources</a>
+    <a href="#footer">Company</a>
+    <a href="#pricing">Pricing</a>
+    <a class="m-cta" href="/app">Get started</a>
+  </div>
+
+  <header class="hero">
+    <svg class="hero-bg" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+      <defs>
+        <linearGradient id="m1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4f6f99"/><stop offset="1" stop-color="#3c5a82"/></linearGradient>
+        <linearGradient id="m2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3f5c84"/><stop offset="1" stop-color="#2f486c"/></linearGradient>
+        <linearGradient id="m3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2c466a"/><stop offset="1" stop-color="#21344f"/></linearGradient>
+      </defs>
+      <path d="M0 640 L210 470 L380 580 L560 410 L760 560 L960 430 L1180 560 L1440 470 L1440 900 L0 900 Z" fill="url(#m1)" opacity="0.55"/>
+      <path d="M0 720 L180 600 L360 690 L580 540 L820 680 L1040 560 L1280 680 L1440 600 L1440 900 L0 900 Z" fill="url(#m2)" opacity="0.7"/>
+      <path d="M0 800 L240 700 L470 780 L720 660 L980 780 L1240 690 L1440 760 L1440 900 L0 900 Z" fill="url(#m3)"/>
+    </svg>
+    <div class="hero-glow"></div>
+
+    <button class="arrow prev" id="prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none"><path d="m15 18-6-6 6-6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button class="arrow next" id="next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none"><path d="m9 6 6 6-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+
+    <div class="hero-content">
+      <h1 class="hero-title" id="heroTitle"></h1>
+      <div class="hero-side">
+        <p id="heroDesc"></p>
+        <div class="hero-ctas">
+          <a class="btn-solid" href="/app">Get started today</a>
+          <a class="btn-ghost" href="/app">Run a brief</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="dots" id="dots"></div>
+  </header>
+
+  <div class="stats">
+    <div class="stats-grid">
+      <div class="stat"><div class="num">100%</div><div class="lab">JSE listings covered</div></div>
+      <div class="stat"><div class="num">&lt;60s</div><div class="lab">Per analyst brief</div></div>
+      <div class="stat"><div class="num">6</div><div class="lab">Sections, every report</div></div>
+      <div class="stat"><div class="num">24/7</div><div class="lab">On-demand research</div></div>
+    </div>
+  </div>
+
+  <section id="features">
+    <div class="container">
+      <p class="eyebrow">One source of truth</p>
+      <h2 class="sec-title">Your whole research stack, in one search.</h2>
+      <p class="sec-lede">Stop stitching together quote pages, PDFs and news feeds. Basis Research pulls the full file on any Jamaican stock and writes it up like a desk analyst.</p>
+      <div class="feat-grid">
+        <div class="card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg></div>
+          <h3>Quotes & fundamentals</h3>
+          <p>Live pricing alongside the financial highlights and ratios that actually move the thesis.</p>
+        </div>
+        <div class="card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V8l7-5 7 5v13"/><path d="M9 21v-6h6v6"/></svg></div>
+          <h3>Board & governance</h3>
+          <p>Directors, ownership and the structure behind the numbers — surfaced automatically.</p>
+        </div>
+        <div class="card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h13v14H4z"/><path d="M17 8h3v9a2 2 0 0 1-2 2h-1"/><path d="M7 9h7M7 13h7"/></svg></div>
+          <h3>News & catalysts</h3>
+          <p>Recent headlines weighed for what matters, not an endless feed to scroll.</p>
+        </div>
+        <div class="card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+          <h3>Valuation read</h3>
+          <p>A clear, plain-English summary of where the stock stands today.</p>
+        </div>
+        <div class="card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 3v9l6 3"/></svg></div>
+          <h3>Key risks</h3>
+          <p>Concentration, currency and sector exposures flagged before you commit capital.</p>
+        </div>
+        <div class="card">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+          <h3>Sourced & cited</h3>
+          <p>Every brief points back to the data behind it, so you can verify and dig deeper.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="steps" id="how">
+    <div class="container">
+      <p class="eyebrow">How it works</p>
+      <h2 class="sec-title">From ticker to thesis in three steps.</h2>
+      <p class="sec-lede">No spreadsheets, no tab-juggling. Type a symbol and get a complete brief back.</p>
+      <div class="step-grid">
+        <div class="step">
+          <div class="bar"></div>
+          <div class="n">01</div>
+          <h3>Search a ticker</h3>
+          <p>Enter any JSE symbol — NCBFG, GK, JMMBGL — or pick from coverage.</p>
+        </div>
+        <div class="step">
+          <div class="bar"></div>
+          <div class="n">02</div>
+          <h3>The agent compiles</h3>
+          <p>It gathers quotes, financials, governance and news, then synthesises the brief.</p>
+        </div>
+        <div class="step">
+          <div class="bar"></div>
+          <div class="n">03</div>
+          <h3>Read, copy, decide</h3>
+          <p>A structured analyst report you can read in minutes, copy, or print to PDF.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta" id="pricing">
+    <div class="container">
+      <h2>Connect the data.<br>Skip the guesswork.</h2>
+      <p>Start generating institutional-grade briefs on Jamaican equities today.</p>
+      <a class="btn-blue" href="/app">Get started today</a>
+    </div>
+  </section>
+
+  <footer id="footer">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="logo" href="/">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2v20M2 12h20M5 5l14 14M19 5 5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <span>Basis</span>
+        </a>
+        <p>Independent equity research on the Jamaica Stock Exchange, generated on demand.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Product</h4>
+        <a href="/app">Equity briefs</a>
+        <a href="#how">How it works</a>
+        <a href="#pricing">Pricing</a>
+      </div>
+      <div class="foot-col">
+        <h4>Company</h4>
+        <a href="#footer">About</a>
+        <a href="#footer">Careers</a>
+        <a href="#footer">Contact</a>
+      </div>
+      <div class="foot-col">
+        <h4>Legal</h4>
+        <a href="#footer">Disclaimer</a>
+        <a href="#footer">Privacy</a>
+        <a href="#footer">Terms</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Basis Research · Kingston, Jamaica</span>
+      <span>For informational purposes only. Not investment advice.</span>
+    </div>
+  </footer>
+
+  <script>
+    const slides = [
+      { a: "Connect the data.", b: "Skip the guesswork.", d: "Basis connects your entire research stack, so you spend less time gathering data and more on the call that matters." },
+      { a: "Every JSE listing.", b: "One search away.", d: "Fundamentals, governance and catalysts — the full file on any Jamaican stock in under a minute." },
+      { a: "Institutional depth.", b: "For every investor.", d: "The research a desk analyst delivers, generated on demand and priced for individuals." },
+    ];
+    const titleEl = document.getElementById("heroTitle");
+    const descEl = document.getElementById("heroDesc");
+    const dotsEl = document.getElementById("dots");
+    let idx = 0;
+
+    slides.forEach((_, i) => {
+      const b = document.createElement("button");
+      b.className = "dot" + (i === 0 ? " active" : "");
+      b.setAttribute("aria-label", "Slide " + (i + 1));
+      b.addEventListener("click", () => go(i));
+      dotsEl.appendChild(b);
+    });
+
+    function render() {
+      const s = slides[idx];
+      titleEl.innerHTML = s.a + '<br><span class="dim">' + s.b + "</span>";
+      descEl.textContent = s.d;
+      titleEl.classList.remove("fade"); void titleEl.offsetWidth; titleEl.classList.add("fade");
+      descEl.classList.remove("fade"); void descEl.offsetWidth; descEl.classList.add("fade");
+      [...dotsEl.children].forEach((d, i) => d.classList.toggle("active", i === idx));
+    }
+    function go(i) { idx = (i + slides.length) % slides.length; render(); restart(); }
+
+    document.getElementById("next").addEventListener("click", () => go(idx + 1));
+    document.getElementById("prev").addEventListener("click", () => go(idx - 1));
+
+    let timer = setInterval(() => go(idx + 1), 6000);
+    function restart() { clearInterval(timer); timer = setInterval(() => go(idx + 1), 6000); }
+    render();
+
+    // dropdowns: click-to-toggle (touch friendly), hover handled by CSS
+    document.querySelectorAll(".nav-item > button").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        const item = btn.parentElement;
+        const wasOpen = item.classList.contains("open");
+        document.querySelectorAll(".nav-item").forEach((n) => n.classList.remove("open"));
+        if (!wasOpen) item.classList.add("open");
+        e.stopPropagation();
+      });
+    });
+    document.addEventListener("click", () => document.querySelectorAll(".nav-item").forEach((n) => n.classList.remove("open")));
+
+    // mobile menu
+    const menu = document.getElementById("mobileMenu");
+    document.getElementById("hamburger").addEventListener("click", () => menu.classList.add("open"));
+    document.getElementById("mClose").addEventListener("click", () => menu.classList.remove("open"));
+    menu.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => menu.classList.remove("open")));
+  </script>
+</body>
+</html>
